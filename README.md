@@ -1,6 +1,6 @@
 # WACustomMentions
 Script that enables custom mentions in WhatsApp Web.  
-research inspired by the [schwartzblatz's whatsapp-web-plus extension](https://github.com/Schwartzblat/WhatsApp-Web-Plus/blob/main/scripts/hook_send_message.js)
+The research was inspired by [Schwartzblatz's WhatsApp-Web Plus extension](https://github.com/Schwartzblat/WhatsApp-Web-Plus/blob/main/scripts/hook_send_message.js) (not a recommendation).
 
 > [!CAUTION] 
 > This JavaScript code is for **research purposes** only and is not intended to be used as a basis for any commercial or non-research purposes.  
