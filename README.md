@@ -45,7 +45,7 @@ WAWebSendMsgRecordAction.sendMsgRecord = async (msg) => {
             customMentions[matchedTag].forEach(phoneNumber =>
                 msg.mentionedJidList.push(createUserWid(`${phoneNumber}@s.whatsapp.net`)));
         }
-        console.log(`%c[DEBUG]%c message hooked: ${msg.body}`, 'font-weight: 900; font-size: 16px; color: orange;', '');
+        console.debug(`%c[DEBUG]%c message hooked: ${msg.body}`, 'font-weight: 900; font-size: 16px; color: orange;', '');
     }
     return originalSendMsgRecord(msg);
 };
