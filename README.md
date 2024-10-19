@@ -24,9 +24,9 @@ const { getParticipantRecord } = require('WAWebGroupMsgSendUtils');
 const { createUserWid } = require('WAWebWidFactory');
 
 const mentions = {
-  '@everyone': 'participants',
-  '@admins': 'admins',
-  '@custom': ['972501231231', '972501111222']
+    '@everyone': 'participants',
+    '@admins': 'admins',
+    '@custom': ['972501231231', '972501111222']
 };
 
 const createMentionWid = num => createUserWid(`${num}@s.whatsapp.net`);
@@ -34,17 +34,19 @@ const createMentionWid = num => createUserWid(`${num}@s.whatsapp.net`);
 const originalSendMsgRecord = WAWebSendMsgRecordAction.sendMsgRecord;
 
 WAWebSendMsgRecordAction.sendMsgRecord = async function(msg) {
-  if (msg?.body && msg.id.remote.server === 'g.us') {
-    const matchedTag = Object.keys(mentions).find(tag => msg.body.includes(tag));
-    if (matchedTag) {
-      const mentionValue = mentions[matchedTag];
-      msg.mentionedJidList.push(...(
-        Array.isArray(mentionValue) ? mentionValue.map(createMentionWid) :
-        (await getParticipantRecord(msg.id.remote.toString()))[mentionValue].map(createUserWid)
-      ));
-      console.debug(`%c[DEBUG]%c message hooked: ${msg.body}`, 'font-weight: 900; font-size: 16px; color: orange;', '');
+    if (msg?.body && msg.id.remote.server === 'g.us') {
+        const matchedTag = Object.keys(mentions).find(tag => msg.body.includes(tag));
+        if (matchedTag) {
+            const mentionValue = mentions[matchedTag];
+            if (Array.isArray(mentionValue)) {
+                msg.mentionedJidList.push(...mentionValue.map(createMentionWid));
+            } else {
+                const group = await getParticipantRecord(msg.id.remote.toString());
+                msg.mentionedJidList.push(...group[mentionValue].map(createUserWid));
+            }
+            console.debug(`%c[DEBUG]%c message hooked: ${msg.body}`, 'font-weight: 900; font-size: 16px; color: orange;', '');
+        }
     }
-  }
-  return originalSendMsgRecord.call(this, msg);
+    return originalSendMsgRecord.call(this, msg);
 };
 ```
