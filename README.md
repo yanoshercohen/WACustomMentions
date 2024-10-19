@@ -21,18 +21,27 @@ The research was inspired by [Schwartzblatz's WhatsApp-Web Plus extension](https
 ```js
 const WAWebSendMsgRecordAction = require('WAWebSendMsgRecordAction');
 const { getParticipantRecord } = require('WAWebGroupMsgSendUtils');
-const { createWid } = require('WAWebWidFactory');
+const { createUserWid } = require('WAWebWidFactory');
 
-const filters = { '@everyone': 'participants', '@admins': 'admins' };
-const original = WAWebSendMsgRecordAction.sendMsgRecord;
+const customMentions = { '@custom': ['972501231231', '972501111222'] }; // @custom will mention +972-50-123-1231 and +972-50-111-1222
+const groupMentions = { '@everyone': 'participants', '@admins': 'admins' };
+const originalSendMsgRecord = WAWebSendMsgRecordAction.sendMsgRecord;
 
 WAWebSendMsgRecordAction.sendMsgRecord = async (msg) => {
-  const tag = msg?.body && msg.id.remote.server === 'g.us' && Object.keys(filters).find(t => msg.body.includes(t));
-  if (tag) {
-    const group = await getParticipantRecord(msg.id.remote.toString());
-    msg.mentionedJidList.push(...group[filters[tag]].map(createWid));
+  const matchedTag = msg?.body && msg.id.remote.server === 'g.us' &&
+    (Object.keys(groupMentions).find(tag => msg.body.includes(tag)) || 
+     Object.keys(customMentions).find(tag => msg.body.includes(tag)));
+
+  if (matchedTag) {
+    if (groupMentions[matchedTag]) {
+      const group = await getParticipantRecord(msg.id.remote.toString());
+      msg.mentionedJidList.push(...group[groupMentions[matchedTag]].map(createUserWid));
+    } else {
+      customMentions[matchedTag].forEach(phoneNumber => 
+        msg.mentionedJidList.push(createUserWid(`${phoneNumber}@s.whatsapp.net`)));
+    }
     console.log(`%c[DEBUG]%c message hooked: ${msg.body}`, 'font-weight: 900; font-size: 16px; color: orange;', '');
   }
-  return original(msg);
+  return originalSendMsgRecord(msg);
 };
 ```
