@@ -26,7 +26,7 @@ const { createUserWid } = require('WAWebWidFactory');
 const mentions = {
     '@everyone': 'participants',
     '@admins': 'admins',
-    '@custom': ['972501231231', '972501112222'] // @custom will tag +972-50-123-1231 and +972-50-111-2222
+    '@custom': ['972501231231', '972501112222'] // @custom will mention +972-50-123-1231 and +972-50-111-2222
 };
 
 const createMentionWid = num => createUserWid(`${num}@s.whatsapp.net`);
