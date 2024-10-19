@@ -23,30 +23,28 @@ const WAWebSendMsgRecordAction = require('WAWebSendMsgRecordAction');
 const { getParticipantRecord } = require('WAWebGroupMsgSendUtils');
 const { createUserWid } = require('WAWebWidFactory');
 
-const customMentions = {
-    '@custom': ['972501231231', '972501111222']
-}; // @custom will mention +972-50-123-1231 and +972-50-111-1222
-const groupMentions = {
-    '@everyone': 'participants',
-    '@admins': 'admins'
+const mentions = {
+  '@everyone': 'participants',
+  '@admins': 'admins',
+  '@custom': ['972501231231', '972501111222']
 };
+
+const createMentionWid = num => createUserWid(`${num}@s.whatsapp.net`);
+
 const originalSendMsgRecord = WAWebSendMsgRecordAction.sendMsgRecord;
 
-WAWebSendMsgRecordAction.sendMsgRecord = async (msg) => {
-    const matchedTag = msg?.body && msg.id.remote.server === 'g.us' &&
-        (Object.keys(groupMentions).find(tag => msg.body.includes(tag)) ||
-            Object.keys(customMentions).find(tag => msg.body.includes(tag)));
-
+WAWebSendMsgRecordAction.sendMsgRecord = async function(msg) {
+  if (msg?.body && msg.id.remote.server === 'g.us') {
+    const matchedTag = Object.keys(mentions).find(tag => msg.body.includes(tag));
     if (matchedTag) {
-        if (groupMentions[matchedTag]) {
-            const group = await getParticipantRecord(msg.id.remote.toString());
-            msg.mentionedJidList.push(...group[groupMentions[matchedTag]].map(createUserWid));
-        } else {
-            customMentions[matchedTag].forEach(phoneNumber =>
-                msg.mentionedJidList.push(createUserWid(`${phoneNumber}@s.whatsapp.net`)));
-        }
-        console.debug(`%c[DEBUG]%c message hooked: ${msg.body}`, 'font-weight: 900; font-size: 16px; color: orange;', '');
+      const mentionValue = mentions[matchedTag];
+      msg.mentionedJidList.push(...(
+        Array.isArray(mentionValue) ? mentionValue.map(createMentionWid) :
+        (await getParticipantRecord(msg.id.remote.toString()))[mentionValue].map(createUserWid)
+      ));
+      console.debug(`%c[DEBUG]%c message hooked: ${msg.body}`, 'font-weight: 900; font-size: 16px; color: orange;', '');
     }
-    return originalSendMsgRecord(msg);
+  }
+  return originalSendMsgRecord.call(this, msg);
 };
 ```
