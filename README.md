@@ -24,7 +24,6 @@ The research was inspired by [Schwartzblatz's WhatsApp-Web Plus extension](https
 (() => {
     const WAWebSendMsgRecordAction = require('WAWebSendMsgRecordAction');
     const getParticipantRecord = require('WAWebGroupMsgSendUtils').getParticipantRecord;
-    // Use string concatenation instead of createUserWid
     const createMentionWid = num => `${num}@s.whatsapp.net`;
 
     const mentions = {
