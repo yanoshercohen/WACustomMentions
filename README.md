@@ -29,7 +29,7 @@ The research was inspired by [Schwartzblatz's WhatsApp-Web Plus extension](https
     const mentions = {
         '@everyone': 'participants',
         '@admins': 'admins',
-        '@custom': ['972501231231', '972501112222']
+        '@custom': ['972501231231', '972501112222']  // @custom will mention +972-50-123-1231 and +972-50-111-2222
     };
 
     const originalSendMsgRecord = WAWebSendMsgRecordAction.sendMsgRecord;
@@ -45,6 +45,7 @@ The research was inspired by [Schwartzblatz's WhatsApp-Web Plus extension](https
                 if (jidsToAdd?.length) {
                     msg.mentionedJidList.push(...jidsToAdd);
                 }
+                console.debug(`%c[DEBUG]%c message hooked: ${msg.__x_body}`, 'font-weight: 900; font-size: 16px; color: orange;', '');
             }
         }
         return originalSendMsgRecord.apply(this, arguments);
