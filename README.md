@@ -1,10 +1,10 @@
 # WACustomMentions
 Script that enables custom mentions in WhatsApp Web.  
 The research was inspired by [Schwartzblatz's WhatsApp-Web Plus extension](https://github.com/Schwartzblat/WhatsApp-Web-Plus/blob/main/scripts/hook_send_message.js) (not a recommendation).
+<img width="534" height="117" alt="screenshot" src="https://github.com/user-attachments/assets/4e647ee5-8c88-441a-8d8c-c29271fd8142" />
 
 > [!NOTE] 
 > Messages with custom mentions are delivered correctly to the server. However, the local message bubble will not be displayed automatically. Displaying in the chat window requires a manual page refresh. This occurs because the script's change to the message object interferes with the local UI update mechanism.
-<img width="534" height="117" alt="screenshot" src="https://github.com/user-attachments/assets/4e647ee5-8c88-441a-8d8c-c29271fd8142" />
 
 > [!CAUTION] 
 > This JavaScript code is for **research purposes** only and is not intended to be used as a basis for any commercial or non-research purposes.  
